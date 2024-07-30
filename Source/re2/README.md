@@ -96,3 +96,22 @@ cmake --build . --target install --config Debug
 cmake --build . --target install --config Release
 ```
 
+## Build on Linux for Linux
+
+```
+cd $TL_LIBRARIES_PATH/Source/re2/re2-20220601
+git apply --whitespace=nowarn ../patch/diff-base-on-20220601.patch
+```
+
+```
+mkdir -p $TL_LIBRARIES_PATH/_build/linux/re2 && cd $TL_LIBRARIES_PATH/_build/linux/re2
+cmake -G "Ninja Multi-Config" -DCMAKE_MAKE_PROGRAM=ninja \
+ -DCMAKE_TOOLCHAIN_FILE="$TL_LIBRARIES_PATH\BuildTools\Linux\ue5-linux-native-carla.cmake" \
+ -DCMAKE_INSTALL_PREFIX=$TL_LIBRARIES_PATH/output/re2 \
+ -DCMAKE_INSTALL_LIBDIR="lib/linux/$<CONFIG>" \
+ -DCMAKE_INSTALL_CMAKEDIR=lib/linux/cmake \
+ -DRE2_BUILD_TESTING=OFF \
+ $TL_LIBRARIES_PATH/Source/re2/re2-20220601
+cmake --build . --target install --config Debug
+cmake --build . --target install --config Release
+```

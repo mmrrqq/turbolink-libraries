@@ -97,3 +97,22 @@ cmake -DCMAKE_TOOLCHAIN_FILE="%SCE_ROOT_DIR%\Prospero\Tools\CMake\PS5.cmake" ^
 cmake --build . --target install --config Debug
 cmake --build . --target install --config Release
 ```
+
+## Build on Linux for Linux
+
+```
+cd $TL_LIBRARIES_PATH/Source/abseil/abseil-20230125
+git apply --whitespace=nowarn ../patch/diff-base-on-2023_01_25.patch
+```
+
+```
+mkdir -p $TL_LIBRARIES_PATH/_build/linux/abseil && cd $TL_LIBRARIES_PATH/_build/linux/abseil
+cmake -G "Ninja Multi-Config" -DCMAKE_MAKE_PROGRAM=ninja \
+ -DCMAKE_TOOLCHAIN_FILE="$TL_LIBRARIES_PATH\BuildTools\Linux\ue5-linux-native-carla.cmake" \
+ -DCMAKE_INSTALL_PREFIX=$TL_LIBRARIES_PATH/output/abseil \
+ -DCMAKE_INSTALL_LIBDIR="lib/linux/$<CONFIG>" \
+ -DCMAKE_INSTALL_CMAKEDIR=lib/linux/cmake \
+ -DBUILD_TESTING=False $TL_LIBRARIES_PATH/Source/abseil/abseil-20230125
+cmake --build . --target install --config Debug
+cmake --build . --target install --config Release
+```

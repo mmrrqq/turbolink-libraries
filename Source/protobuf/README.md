@@ -116,3 +116,24 @@ cmake -DCMAKE_TOOLCHAIN_FILE="%SCE_ROOT_DIR%\Prospero\Tools\CMake\PS5.cmake" ^
 cmake --build . --target install --config Debug
 cmake --build . --target install --config Release
 ```
+
+## Build on Linux for Linux
+
+```
+cd $TL_LIBRARIES_PATH/Source/protobuf/protobuf-4.23.x
+git apply --whitespace=nowarn ../patch/diff-base-on-4.23.patch
+```
+
+```
+mkdir $TL_LIBRARIES_PATH/_build/linux/protobuf && cd $TL_LIBRARIES_PATH/_build/linux/protobuf
+cmake -S$TL_LIBRARIES_PATH/Source/protobuf/protobuf-4.23.x -B. -G "Ninja Multi-Config" -DCMAKE_MAKE_PROGRAM=ninja -DCMAKE_TOOLCHAIN_FILE="$TL_LIBRARIES_PATH\BuildTools\Linux\ue5-linux-native-carla.cmake" \
+ -DCMAKE_INSTALL_PREFIX=$TL_LIBRARIES_PATH/output/protobuf \
+ -DCMAKE_INSTALL_LIBDIR="lib/linux/$<CONFIG>" \
+ -DCMAKE_INSTALL_CMAKEDIR=lib/linux/cmake \
+ -Dprotobuf_BUILD_TESTS=false -Dprotobuf_WITH_ZLIB=false \
+ -Dprotobuf_BUILD_EXAMPLES=false \
+ -Dprotobuf_BUILD_PROTOC_BINARIES=true -Dprotobuf_BUILD_LIBPROTOC=true \
+ -Dprotobuf_ABSL_PROVIDER=package -Dabsl_DIR="$TL_LIBRARIES_PATH/output/abseil/lib/linux/cmake"
+cmake --build . --target install --config Debug
+cmake --build . --target install --config Release
+```

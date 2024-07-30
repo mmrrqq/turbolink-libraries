@@ -195,3 +195,37 @@ cmake -DCMAKE_TOOLCHAIN_FILE="%SCE_ROOT_DIR%\Prospero\Tools\CMake\PS5.cmake" ^
 cmake --build . --target install --config Debug
 cmake --build . --target install --config Release
 ```
+
+## Build on Linux for Linux
+
+```
+cd $TL_LIBRARIES_PATH/Source/grpc/grpc-1.57
+git apply --whitespace=nowarn ../patch/diff-base-on-1.57.patch
+```
+
+```
+mkdir -p $TL_LIBRARIES_PATH/_build/linux/grpc && cd $TL_LIBRARIES_PATH/_build/linux/grpc
+cmake -G "Ninja Multi-Config" -DCMAKE_MAKE_PROGRAM=ninja \
+ -DCMAKE_TOOLCHAIN_FILE="$TL_LIBRARIES_PATH\BuildTools\Linux\ue5-linux-native-carla.cmake" \
+ -DCMAKE_CXX_STANDARD=17 \
+ -DCMAKE_INSTALL_PREFIX=$TL_LIBRARIES_PATH/output/grpc \
+ -DgRPC_INSTALL_LIBDIR="lib/linux/$<$<CONFIG:Debug>:Debug>$<$<CONFIG:Release>:Release>" \
+ -DgRPC_INSTALL_CMAKEDIR=lib/linux/cmake \
+ -DgRPC_ABSL_PROVIDER=package -Dabsl_DIR="$TL_LIBRARIES_PATH/output/abseil/lib/linux/cmake" \
+ -DgRPC_USE_CARES=OFF \
+ -DgRPC_RE2_PROVIDER=package -Dre2_DIR="$TL_LIBRARIES_PATH/output/re2/lib/linux/cmake" \
+ -DgRPC_PROTOBUF_PROVIDER=package \
+ -DProtobuf_DIR="$TL_LIBRARIES_PATH/output/protobuf/lib/linux/cmake" \
+ -Dutf8_range_DIR="$TL_LIBRARIES_PATH/output/protobuf/lib/linux/cmake" \
+ -DgRPC_ZLIB_PROVIDER=package \
+ -DZLIB_INCLUDE_DIR="$UE_ROOT/Engine/Source/ThirdParty/zlib/v1.2.8/include/Unix/x86_64-unknown-linux-gnu" \
+ -DZLIB_LIBRARY_RELEASE="$UE_ROOT/Engine/Source/ThirdParty/zlib/v1.2.8/lib/Unix/x86_64-unknown-linux-gnu/libz.a" \
+ -DZLIB_LIBRARY_DEBUG="$UE_ROOT/Engine/Source/ThirdParty/zlib/v1.2.8/lib/Unix/x86_64-unknown-linux-gnu/libz.a" \
+ -DgRPC_SSL_PROVIDER=package \
+ -DOPENSSL_INCLUDE_DIR="$UE_ROOT/Engine/Source/ThirdParty/OpenSSL/1.1.1t/include/Unix" \
+ -DOPENSSL_SSL_LIBRARY="$UE_ROOT/Engine/Source/ThirdParty/OpenSSL/1.1.1t/lib/Unix/x86_64-unknown-linux-gnu/libssl.a" \
+ -DOPENSSL_CRYPTO_LIBRARY="$UE_ROOT/Engine/Source/ThirdParty/OpenSSL/1.1.1t/lib/Unix/x86_64-unknown-linux-gnu/libcrypto.a" \
+ $TL_LIBRARIES_PATH/Source/grpc/grpc-1.57
+cmake --build . --target install --config Debug
+cmake --build . --target install --config Release
+```
